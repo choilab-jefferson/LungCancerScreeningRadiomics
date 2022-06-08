@@ -1,0 +1,11 @@
+pandas
+scipy
+numpy
+matplotlib
+ruffus
+SimpleITK
+pylidc
+tqdm
+auto-sklearn
+tpot
+git+https://github.com/taznux/TCIAExplorer.git

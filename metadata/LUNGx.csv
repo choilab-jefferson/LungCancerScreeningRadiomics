@@ -1,0 +1,84 @@
+No.,PID,LD,PD,Z,X,Y,malignancy,Final Diagnosis
+1,CT-Training-LC001,10,8,135,120,325,1,
+2,CT-Training-LC002,15,12,70,139,359,1,
+3,CT-Training-LC003,25,20,70,375,323,1,
+4,CT-Training-LC008,30,24,65,95,328,1,
+5,CT-Training-LC009,35,28,63,145,299,1,
+6,CT-Training-BE001,10,8,169,405,296,0,
+7,CT-Training-BE002,15,12,117,184,268,0,
+8,CT-Training-BE006,22,15,241,449,266,0,
+9,CT-Training-BE007,25,18,194,385,206,0,
+10,CT-Training-BE010,30,20,69,120,336,0,
+11,LUNGx-CT001,30,24,142,135,303,0,Benign nodule
+12,LUNGx-CT002,46,37,205,330,348,0,Benign nodule
+13,LUNGx-CT002,11,8,150,364,212,0,Benign nodule
+14,LUNGx-CT003,24,19,146,374,374,1,Primary lung cancer
+15,LUNGx-CT004,21,17,41,197,290,1,Primary lung cancer
+16,LUNGx-CT004,19,15,80,328,242,1,Primary lung cancer
+17,LUNGx-CT005,16,12,42,333,356,1,Primary lung cancer
+18,LUNGx-CT005,8,5,138,164,420,0,Benign nodule
+19,LUNGx-CT006,23,18,50,381,284,1,Primary lung cancer
+20,LUNGx-CT007,30,20,188,170,355,0,Benign nodule
+21,LUNGx-CT008,21,17,139,172,208,0,Benign nodule
+22,LUNGx-CT009,21,17,164,175,209,0,Benign nodule
+23,LUNGx-CT010,19,16,139,164,163,0,Benign nodule
+24,LUNGx-CT011,45,20,56,179,335,0,Benign nodule
+25,LUNGx-CT012,10,8,88,131,360,1,Primary lung cancer
+26,LUNGx-CT013,20,16,91,373,240,0,Benign nodule
+27,LUNGx-CT014,23,18,204,163,212,1,Primary lung cancer
+28,LUNGx-CT015,20,12,124,353,413,1,Primary lung cancer
+29,LUNGx-CT016,22,18,62,344,358,1,Primary lung cancer
+30,LUNGx-CT016,21,16,55,204,295,1,Primary lung cancer
+31,LUNGx-CT017,12,8,178,354,355,0,Benign nodule
+32,LUNGx-CT017,8,5,153,376,283,0,Benign nodule
+33,LUNGx-CT018,45,20,137,116,242,0,Benign nodule
+34,LUNGx-CT019,20,16,131,128,362,1,Primary lung cancer 
+35,LUNGx-CT020,30,20,179,379,285,0,Benign nodule
+36,LUNGx-CT021,30,25,76,296,267,1,Primary lung cancer 
+37,LUNGx-CT022,30,25,68,159,355,1,Primary lung cancer 
+38,LUNGx-CT023,12,8,61,332,277,0,Benign nodule
+39,LUNGx-CT024,23,18,197,107,284,0,Benign nodule
+40,LUNGx-CT025,27,22,214,134,300,1,Primary lung cancer 
+41,LUNGx-CT026,16,10,138,427,316,1,Primary lung cancer 
+42,LUNGx-CT027,20,16,97,357,250,0,Benign nodule
+43,LUNGx-CT028,21,17,135,117,312,0,Benign nodule
+44,LUNGx-CT029,22,18,73,179,369,0,Benign nodule
+45,LUNGx-CT029,12,8,79,353,277,0,Benign nodule
+46,LUNGx-CT030,10,8,104,118,310,0,Benign nodule
+47,LUNGx-CT031,25,20,70,130,230,0,Benign nodule
+48,LUNGx-CT032,25,20,239,392,341,1,Primary lung cancer 
+49,LUNGx-CT033,26,20,113,188,312,1,Primary lung cancer 
+50,LUNGx-CT034,16,13,150,128,274,0,Benign nodule
+51,LUNGx-CT035,12,8,268,154,355,0,Benign nodule
+52,LUNGx-CT035,8,5,215,454,300,0,Benign nodule
+53,LUNGx-CT036,22,18,220,150,392,0,Benign nodule
+54,LUNGx-CT037,18,15,62,374,315,0,Benign nodule
+55,LUNGx-CT038,16,10,197,184,249,0,Benign nodule
+56,LUNGx-CT039,15,10,242,149,380,0,Benign nodule
+57,LUNGx-CT040,28,16,189,336,353,1,Primary lung cancer 
+58,LUNGx-CT041,26,20,172,107,292,1,Primary lung cancer 
+59,LUNGx-CT042,24,19,178,326,391,1,Primary lung cancer 
+60,LUNGx-CT043,21,17,177,394,162,0,Benign nodule
+61,LUNGx-CT043,10,8,230,440,289,0,Benign nodule
+62,LUNGx-CT044,20,16,90,136,298,1,Primary lung cancer 
+63,LUNGx-CT045,24,19,148,314,216,1,Primary lung cancer 
+64,LUNGx-CT046,21,17,61,309,211,1,Primary lung cancer 
+65,LUNGx-CT047,24,19,53,199,306,1,Primary lung cancer 
+66,LUNGx-CT047,24,19,67,236,276,1,Primary lung cancer 
+67,LUNGx-CT048,25,20,115,368,312,1,Primary lung cancer 
+68,LUNGx-CT049,15,12,71,398,296,0,Benign nodule
+69,LUNGx-CT050,18,12,41,385,316,1,Primary lung cancer 
+70,LUNGx-CT051,28,20,77,303,297,1,Primary lung cancer 
+71,LUNGx-CT052,20,16,124,135,202,1,Primary lung cancer
+72,LUNGx-CT052,18,15,50,342,341,1,Primary lung cancer
+73,LUNGx-CT053,24,19,213,195,303,1,Primary lung cancer
+74,LUNGx-CT054,28,22,180,196,336,1,Primary lung cancer
+75,LUNGx-CT054,16,13,149,174,208,0.8,Suspicious malignant nodule
+76,LUNGx-CT055,25,20,125,223,193,1,Primary lung cancer
+77,LUNGx-CT056,23,19,56,209,308,1,Primary lung cancer
+78,LUNGx-CT056,28,23,98,374,218,0.8,Suspicious malignant nodule
+79,LUNGx-CT057,23,19,169,396,353,0,Benign nodule
+80,LUNGx-CT058,17,14,157,377,234,0,Benign nodule
+81,LUNGx-CT059,30,25,235,75,288,0,Benign nodule
+82,LUNGx-CT059,30,25,258,371,207,0,Benign nodule
+83,LUNGx-CT060,34,27,133,192,298,0,Benign nodule

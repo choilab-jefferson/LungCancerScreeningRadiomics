@@ -1,0 +1,9 @@
+[submodule "matlab/toolbox/gptoolbox"]
+	path = matlab/toolbox/gptoolbox
+	url = https://github.com/alecjacobson/gptoolbox.git
+[submodule "matlab/toolbox/iso2mesh"]
+	path = matlab/toolbox/iso2mesh
+	url = https://github.com/fangq/iso2mesh.git
+[submodule "matlab/toolbox/lung-image-analysis"]
+	path = matlab/toolbox/lung-image-analysis
+	url = https://github.com/taznux/lung-image-analysis.git
