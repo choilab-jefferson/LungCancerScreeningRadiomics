@@ -16,8 +16,9 @@ subset = '';%'_smooth';
 
 %% directory paths
 experiment_path = [data_path '/' experiment_set];
-output_experiment_path=[output_path '/' experiment_set];
+output_experiment_path=['../' output_path '/' experiment_set];
 if ~isdir(output_experiment_path); mkdir(output_experiment_path); end
+if ~isdir([output_experiment_path '/spiculation']); mkdir([output_experiment_path '/spiculation']); end
 if ~isdir([output_experiment_path '/parameters']); mkdir([output_experiment_path '/parameters']); end
 
 obj_path = [experiment_path '/objs' subset];
@@ -258,16 +259,16 @@ for idx = 1:size(pid_list,2)
     %%
     %writetable(f, ['output/' pid '/' pid '_' nid '_' type num2str(sigma,'%.1f') '-' num2str(gap) '-' num2str(is_boundary_only) num2str(is_contour) num2str(weight_mode) '.csv']);
 
-    savefig([output_experiment_path '/' pid '_' nid '_sphere_param.fig'])
+    savefig([output_experiment_path '/spiculation/' pid '_' nid '_sphere_param.fig'])
 
     set(gcf, 'PaperUnits', 'inches');
     x_width=12; y_width=6;
     set(gcf, 'PaperPosition', [0 0 x_width y_width]); %
 
 
-    print([output_experiment_path '/' pid '_' nid '_sphere_param.png'],'-dpng','-r300')
+    print([output_experiment_path '/spiculation/' pid '_' nid '_sphere_param.png'],'-dpng','-r300')
     close all
     toc
 end
-writetable(all_peaks, [output_experiment_path '/peaks.csv']);
-writetable(features, [output_experiment_path '/features.csv']);
+writetable(all_peaks, [output_experiment_path '/spiculation/peaks.csv']);
+writetable(features, [output_experiment_path '/spiculation/features.csv']);

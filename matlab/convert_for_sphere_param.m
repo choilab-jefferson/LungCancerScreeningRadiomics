@@ -52,13 +52,19 @@ for idx = 1:numel(pid_list)
 
     if ~isdir(['output/' pid]); mkdir(['output/' pid]); end
     for nid = 1:size(nodule_info,1)
+        %% input part
         rnid = num2str(nodule_info{nid, 'nid'});
         try
-            [o_nodule_img_3d, meta_nodule_img_3d] = fn_nrrdread([experiment_path '/' pid '/' pid '_CT_' rnid '-seg' iso '-label.nrrd']);
+            label_file_path = [experiment_path '/' pid '/' pid '_CT_' rnid '-seg' iso '-label.nrrd'];
+            [o_nodule_img_3d, meta_nodule_img_3d] = fn_nrrdread(label_file_path);
+%             [o_attached_img_3d, ~] = fn_nrrdread(strrep(label_file_path, ['seg' iso], 'attached'));
         catch
             continue
         end
         sz_o_nodule_img_3d = size(o_nodule_img_3d);
+        if numel(sz_o_nodule_img_3d) == 2
+            sz_o_nodule_img_3d(3) = 1;
+        end
 
         meta = struct();
         meta.type = 'float';
@@ -66,62 +72,34 @@ for idx = 1:numel(pid_list)
         meta.endian = 'little';
         meta.spacedirections = meta_nodule_img_3d.spacedirections;
         meta.pixelspacing = meta_nodule_img_3d.pixelspacing;
-        
-        
-        sz_nodule_blk_3d = max([sz_bbox,sz_bbox,sz_bbox],sz_o_nodule_img_3d);
-        offsetXYZ = round((sz_nodule_blk_3d - sz_o_nodule_img_3d)/2)+1;
-        BW = zeros(sz_nodule_blk_3d);
-        BW(offsetXYZ(2):offsetXYZ(2)+sz_o_nodule_img_3d(1)-1, ...
-            offsetXYZ(1):offsetXYZ(1)+sz_o_nodule_img_3d(2)-1, ...
-            offsetXYZ(3):offsetXYZ(3)+sz_o_nodule_img_3d(3)-1) = o_nodule_img_3d;
-        display(size(BW))
-        
-        meta.spaceorigin = meta_nodule_img_3d.spaceorigin-offsetXYZ.*meta.pixelspacing';
-        
-        
-        %% select the biggest object
-        ce_bbox = round(sz_bbox/2);
-        CC = bwconncomp(BW,6);
-        idx1 = find(cellfun(@(x) sum(x == sz_bbox*sz_bbox*(ce_bbox-1)+sz_bbox*(ce_bbox-1)+ce_bbox), CC.PixelIdxList));
-        if numel(idx1) == 0
-            numPixels = cellfun(@numel,CC.PixelIdxList);
-            [biggest, idx1] = max(numPixels);
-        end
-        BW(:) = 0;
-        BW(CC.PixelIdxList{idx1}) = 1;
+        meta.spaceorigin = meta_nodule_img_3d.spaceorigin;
+
+        BW = o_nodule_img_3d;
+
 
         %%
-        if sum(BW(:)) == 0
-            continue
-        end
-
-
-        merged_nodule_info = [merged_nodule_info;nodule_info(nid,:)];
-        
-        %%
-        S = regionprops(BW,'Centroid');
+        S = regionprops(BW>0.4,'Centroid');
         ce = S.Centroid;
         display(ce)
-             
-        if ~smooth
-            s = isosurface(BW,0.4);
-        else
-            %Lempisky smooth surface optimization
-            V = logical(BW);
-            [f,v] = ExtractSeparatingSurfaceCPU(V, 1000);
-            s.vertices = v; s.faces = f;
-        end
+
+        s = isosurface(BW,0.4);
         n = size(s.vertices,1);
         m = size(s.faces,1);
-        s.vertices = s.vertices.*repmat(meta.pixelspacing',n,1) + repmat(meta.spaceorigin,n,1);
+%         S = regionprops(imerode(o_attached_img_3d,se1),'PixelList');
+%         if size(S,1) > 0 && size(S.PixelList,1)>1
+%             D = pdist2(S.PixelList,s.vertices);
+%             attached_vertices=(min(D)<3)';   
+%         else
+%             attached_vertices=zeros(size(s.vertices,1),1);
+%         end
+        s.vertices = (s.vertices-1).*repmat(meta.pixelspacing',size(s.vertices,1),1) + repmat(meta.spaceorigin,size(s.vertices,1),1);
         s.vertices(:,1:2) = -s.vertices(:,1:2);
-
-        v = s.vertices; f = s.faces;
-        try
-            [v,f]=meshcheckrepair(v,f); % iso2mesh
-        catch
-            [v,f]=meshcheckrepair(v,f,'meshfix');
+        if smooth
+            s = smoothpatch(s,1,1);
         end
+        v = s.vertices; f = s.faces;
+        [v,f]=meshcheckrepair(v,f); % iso2mesh
+        [v,f]=meshcheckrepair(v,f,'meshfix');
         %[v,f]=remeshsurf(v,f,1);
         [v,f]=surfreorient(v,f);
         [v,f]=meshcheckrepair(v,f);
@@ -129,13 +107,17 @@ for idx = 1:numel(pid_list)
             statistics(v,f) % gptoolbox
         catch
         end
+%         sum(attached_vertices)/size(s.vertices,1)
+%         patch(s, 'FaceVertexCData',double(attached_vertices),'FaceAlpha',1,'FaceColor','interp', 'EdgeColor', 'none'),caxis([0, 1]),view([-37.5 30]);
+%         print(gcf,[objs_experiment_path '/' pid '_' rnid '_attachement.png'],'-dpng','-r300')
         writeOBJ([objs_experiment_path '/' pid '_' rnid '.obj'], v, f);
         %break
-    end
-    close all
 
-    fclose all;
-    toc
+        close all
+
+        fclose all;
+        toc
+    end
 end
 
 writetable(merged_nodule_info, [objs_experiment_path '/nodule_info.csv'])

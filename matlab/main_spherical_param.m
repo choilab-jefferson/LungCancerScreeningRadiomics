@@ -15,7 +15,7 @@ esph_factor = (3/(4*pi))^(1/3);
 
 
 %% directory paths
-subset = 'new';
+subset = '';
 experiment_path = [data_path '/' experiment_set];
 
 if strfind(subset,'seg')
@@ -42,8 +42,8 @@ for idx = 1:size(pid_list,2)
     nids = strsplit(nid,'-'); % to cover multiple segmentations for a nodule
     
     fprintf('%d %s %s\n', idx, pid, nid);
-    if nid > '1', continue; end
-    if numel(strfind(pid, '_'))>0 || numel(strfind(pid, 'Ell'))>0, continue; end
+    %if str2num(nid) > 1, continue; end
+    %if numel(strfind(pid, '_'))>0 || numel(strfind(pid, 'Ell'))>0, continue; end
     %if numel(strfind(pid, '_'))>0 || numel(strfind(pid, 'Ell'))>0 || ~strcmp(nid,'1'), continue; end
     %if numel(strfind(pid, '0043'))==0, continue; end
     
@@ -66,7 +66,7 @@ for idx = 1:size(pid_list,2)
     [s.vertices,s.faces] = readOBJ(obj_filename);
     if refine, s = refinepatch(s); end
     if smooth, s = smoothpatch(s,1,1); end
-    temp_ply = [tempdir pid '_' nid '.ply'];
+    temp_ply = [tempdir experiment_set subset '.ply'];
     writePLY(temp_ply, s.vertices, s.faces);
     disp('Spherical parameterization...')
     system([ConformalizedMCF ' --in ' temp_ply ' --outHeader ' tempdir ' --steps 3000 --threads 1']);

@@ -51,7 +51,7 @@ for idx = 1:numel(pid_list)
         label_file_path = [label_file.folder '/' label_file.name];
         try
             [o_nodule_img_3d, meta_nodule_img_3d] = fn_nrrdread(label_file_path);
-            [o_attached_img_3d, ~] = fn_nrrdread(strrep(label_file_path, ['seg' iso], 'attached'));
+%             [o_attached_img_3d, ~] = fn_nrrdread(strrep(label_file_path, ['seg' iso], 'attached'));
         catch
             continue
         end
@@ -79,13 +79,13 @@ for idx = 1:numel(pid_list)
         s = isosurface(BW,0.4);
         n = size(s.vertices,1);
         m = size(s.faces,1);
-        S = regionprops(imerode(o_attached_img_3d,se1),'PixelList');
-        if size(S,1) > 0 && size(S.PixelList,1)>1
-            D = pdist2(S.PixelList,s.vertices);
-            attached_vertices=(min(D)<3)';   
-        else
-            attached_vertices=zeros(size(s.vertices,1),1);
-        end
+%         S = regionprops(imerode(o_attached_img_3d,se1),'PixelList');
+%         if size(S,1) > 0 && size(S.PixelList,1)>1
+%             D = pdist2(S.PixelList,s.vertices);
+%             attached_vertices=(min(D)<3)';   
+%         else
+%             attached_vertices=zeros(size(s.vertices,1),1);
+%         end
         s.vertices = (s.vertices-1).*repmat(meta.pixelspacing',size(s.vertices,1),1) + repmat(meta.spaceorigin,size(s.vertices,1),1);
         s.vertices(:,1:2) = -s.vertices(:,1:2);
         if smooth
@@ -105,9 +105,9 @@ for idx = 1:numel(pid_list)
         pid = id{1};
         id = strsplit(id{3},'-');
         nid = id{1};
-        sum(attached_vertices)/size(s.vertices,1)
-        patch(s, 'FaceVertexCData',double(attached_vertices),'FaceAlpha',1,'FaceColor','interp', 'EdgeColor', 'none'),caxis([0, 1]),view([-37.5 30]);
-        print(gcf,[objs_experiment_path '/' pid '_' nid '_attachement.png'],'-dpng','-r300')
+%         sum(attached_vertices)/size(s.vertices,1)
+%         patch(s, 'FaceVertexCData',double(attached_vertices),'FaceAlpha',1,'FaceColor','interp', 'EdgeColor', 'none'),caxis([0, 1]),view([-37.5 30]);
+%         print(gcf,[objs_experiment_path '/' pid '_' nid '_attachement.png'],'-dpng','-r300')
         writeOBJ([objs_experiment_path '/' pid '_' nid '.obj'], v, f);
         %break
 

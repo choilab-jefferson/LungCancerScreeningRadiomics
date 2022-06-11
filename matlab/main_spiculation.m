@@ -12,12 +12,13 @@ addpath(genpath('spiculation_detection'))
 
 %% set values
 experiment_set = 'nodule-lidc';
+subset = '';
 
 %% directory paths
-subset = 'new';
 experiment_path = [data_path '/' experiment_set];
-output_experiment_path=[output_path '/' experiment_set '/spiculation_' subset];
+output_experiment_path=['../' output_path '/' experiment_set];
 if ~isdir(output_experiment_path); mkdir(output_experiment_path); end
+if ~isdir([output_experiment_path '/spiculation']); mkdir([output_experiment_path '/spiculation']); end
 if ~isdir([output_experiment_path '/parameters']); mkdir([output_experiment_path '/parameters']); end
 
 if strfind(subset,'seg')
@@ -43,8 +44,8 @@ for idx = 1:size(pid_list,2)
     nids = strsplit(nid,'-'); % to cover multiple segmentations for a nodule
     
     fprintf('%d %s %s\n', idx, pid, nid);
-    if nid > '1', continue; end
-    if numel(strfind(pid, '_'))>0 || numel(strfind(pid, 'Ell'))>0, continue; end
+    %if str2num(nid) > 1, continue; end
+    %if numel(strfind(pid, '_'))>0 || numel(strfind(pid, 'Ell'))>0, continue; end
     %if numel(strfind(pid, '_'))>0 || numel(strfind(pid, 'Ell'))>0 || ~strcmp(nid,'1'), continue; end
     %if numel(strfind(pid, '0043'))==0, continue; end
     
@@ -264,16 +265,16 @@ for idx = 1:size(pid_list,2)
     %%
     %writetable(f, ['output/' pid '/' pid '_' nid '_' type num2str(sigma,'%.1f') '-' num2str(gap) '-' num2str(is_boundary_only) num2str(is_contour) num2str(weight_mode) '.csv']);
     
-    savefig([output_experiment_path '/' pid '_' nid '_sphere_param.fig'])
+    savefig([output_experiment_path '/spiculation/' pid '_' nid '_sphere_param.fig'])
 
     set(gcf, 'PaperUnits', 'inches');
     x_width=12; y_width=6;
     set(gcf, 'PaperPosition', [0 0 x_width y_width]); %
 
 
-    print([output_experiment_path '/' pid '_' nid '_sphere_param.png'],'-dpng','-r300')
+    print([output_experiment_path '/spiculation/' pid '_' nid '_sphere_param.png'],'-dpng','-r300')
     close all
     toc
 end
-writetable(all_peaks, [output_experiment_path '/peaks.csv']);
-writetable(features, [output_experiment_path '/features.csv']);
+writetable(all_peaks, [output_experiment_path '/spiculation/peaks.csv']);
+writetable(features, [output_experiment_path '/spiculation/features.csv']);
