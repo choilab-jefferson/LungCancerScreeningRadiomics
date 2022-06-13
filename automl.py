@@ -45,24 +45,28 @@ lungx_tags.iloc[lungx_tags[2].isna(), 1] = "gc"
 features_lungx['NID'] = lungx_tags[0].astype(int)
 features_lungx['Tags'] = lungx_tags[1]
 
-features_lidc = features_lidc.loc[(features_lidc.Tags=='seg') & (features_lidc.NID==1)]
+features_lidc = features_lidc.loc[(features_lidc.Tags=='seg')]
 features_lungx = features_lungx.loc[(features_lungx.Tags=='seg')]
 
 #features_lidc = features_lidc.drop(columns=["WeightedElongation","WeightedFlatness","2DWeightedElongation","2DWeightedFlatness"])
 #features_lungx = features_lungx.drop(columns=["WeightedElongation","WeightedFlatness","2DWeightedElongation","2DWeightedFlatness"])
-features_lidc72 = features_lidc.loc[features_lidc.PID.isin(clinical_lidc72.PID)]
+features_lidc72 = features_lidc.loc[features_lidc.PID.isin(clinical_lidc72.PID) & (features_lidc.NID==1)]
+features_lidc72RM = features_lidc.loc[features_lidc.PID.isin(clinical_lidc72.PID)]
+
 clinical_lidc = clinical_lidc.loc[clinical_lidc.set_index(['PID','NID']).index.isin(features_lidc.set_index(['PID','NID']).index)]
 features_lidc = features_lidc.loc[features_lidc.set_index(['PID','NID']).index.isin(clinical_lidc.set_index(['PID','NID']).index)]
+
 features_lidc_train = features_lidc.loc[~features_lidc.PID.isin(clinical_lidc72.PID)]
 clinical_lidc_train = clinical_lidc.loc[~clinical_lidc.PID.isin(clinical_lidc72.PID)]
+clinical_lidc72RM = clinical_lidc.loc[clinical_lidc.PID.isin(clinical_lidc72.PID)]
 
 # %%
 spiculation_lidc = pd.read_csv("output/nodule-lidc/spiculation/features.csv")
 spiculation_lungx = pd.read_csv("output/nodule-lungx/spiculation/features.csv")
 
-spiculation_lidc = spiculation_lidc.loc[spiculation_lidc.NID==1]
+spiculation_lidc72RM = spiculation_lidc.loc[spiculation_lidc.PID.isin(clinical_lidc72.PID)]
+spiculation_lidc72 = spiculation_lidc.loc[spiculation_lidc.PID.isin(clinical_lidc72.PID) & (spiculation_lidc.NID==1)]
 
-spiculation_lidc72 = spiculation_lidc.loc[spiculation_lidc.PID.isin(clinical_lidc72.PID)]
 spiculation_lidc = spiculation_lidc.loc[spiculation_lidc.set_index(['PID','NID']).index.isin(clinical_lidc.set_index(['PID','NID']).index)]
 spiculation_lidc_train = spiculation_lidc.loc[~spiculation_lidc.PID.isin(clinical_lidc72.PID)]
 
@@ -75,22 +79,33 @@ X = pd.concat([features_lidc_train.reset_index().iloc[:, 5:-1], spiculation_lidc
 X = X.loc[:,X.isna().sum(axis=0)==0]
 y = clinical_lidc_train.Malignancy > 3
 
+#X_72RM = features_lidc72RM.iloc[:, 4:-1]
+X_72RM = pd.concat([features_lidc72RM.reset_index().iloc[:, 5:-1], spiculation_lidc72RM.reset_index().iloc[:,4:]], axis=1) # with spiculation features
+X_72RM = X_72RM.loc[:,X_72RM.isna().sum(axis=0)==0]
+y_72RM = clinical_lidc72RM.Malignancy > 3
+
 #X_72 = features_lidc72.iloc[:, 4:-1]
 X_72 = pd.concat([features_lidc72.reset_index().iloc[:, 5:-1], spiculation_lidc72.reset_index().iloc[:,4:]], axis=1) # with spiculation features
-X_72 = X_72.loc[:, X.columns]
+X_72 = X_72.loc[:,X_72.isna().sum(axis=0)==0]
 y_72 = clinical_lidc72.PMalignancy == 2
 
 #X_lungx = features_lungx.iloc[:, 4:-1]
 X_lungx = pd.concat([features_lungx.reset_index().iloc[:, 5:-1], spiculation_lungx.reset_index().iloc[:,4:]], axis=1) # with spiculation features
-X_lungx = X_lungx.loc[:, X.columns]
+X_lungx = X_lungx.loc[:,X_lungx.isna().sum(axis=0)==0]
 y_lungx = clinical_lungx.malignancy > 0
 
+# %%
+columns =  np.intersect1d(np.intersect1d(np.intersect1d(X.columns, X_72RM.columns), X_72.columns), X_lungx.columns)
+X = X[columns]
+X_72RM = X_72RM[columns]
+X_72 = X_72[columns]
+X_lungx = X_lungx[columns]
 
+# %%
 X_lungx_cal = X_lungx.iloc[0:10]
 y_lungx_cal = y_lungx.iloc[0:10]
 X_lungx_test = X_lungx.iloc[10:]
 y_lungx_test = y_lungx.iloc[10:]
-
 
 # %% [markdown]
 #  ### 1.2 Data splitting
@@ -98,7 +113,6 @@ y_lungx_test = y_lungx.iloc[10:]
 # %%
 X_train, X_test, y_train, y_test = \
     sklearn.model_selection.train_test_split(X, y, test_size=0.2, random_state=42)
-
 
 # %% [markdown]
 #  ## 2. Feature Selection
@@ -189,7 +203,7 @@ from tpot import TPOTClassifier
 # X_train, X_test, y_train, y_test = \
 #    sklearn.model_selection.train_test_split(X, y, random_state=42)
     
-pipeline_optimizer = TPOTClassifier(generations=10, population_size=500, cv=5,
+pipeline_optimizer = TPOTClassifier(generations=5, population_size=300, cv=5,
                                     random_state=42, verbosity=2)
 # pipeline_optimizer.fit(X_train, y_train)
 # print(pipeline_optimizer.score(X_test, y_test))
@@ -202,6 +216,7 @@ pipeline_optimizer.fit(X_train[columns_retained], y_train)
 
 # %%
 print("Test AUC:", pipeline_optimizer.score(X_test[columns_retained], y_test))
+print("72RM AUC:", pipeline_optimizer.score(X_72RM[columns_retained], y_72RM))
 print("72 AUC:", pipeline_optimizer.score(X_72[columns_retained], y_72))
 print("LUNGx AUC:", pipeline_optimizer.score(X_lungx_test[columns_retained], y_lungx_test))
 
@@ -232,6 +247,9 @@ print(np.max(automl.cv_results_['mean_test_score']))
 y_hat = automl.predict(X_test[columns_retained])
 y_pred = automl.predict_proba(X_test[columns_retained])
 
+y_hat_72RM = automl.predict(X_72RM[columns_retained])
+y_pred_72RM = automl.predict_proba(X_72RM[columns_retained])
+
 y_hat_72 = automl.predict(X_72[columns_retained])
 y_pred_72 = automl.predict_proba(X_72[columns_retained])
 
@@ -240,10 +258,12 @@ y_pred_lungx = automl.predict_proba(X_lungx_test[columns_retained])
 
 # show scores
 print("Test AUC: ", sklearn.metrics.roc_auc_score(y_test, y_pred[:,1]))
+print("72RM AUC: ", sklearn.metrics.roc_auc_score(y_72RM, y_pred_72RM[:,1]))
 print("72 AUC: ", sklearn.metrics.roc_auc_score(y_72, y_pred_72[:,1]))
 print("LUNGx AUC: ", sklearn.metrics.roc_auc_score(y_lungx_test, y_pred_lungx[:,1]))
 
 print("\nTest Accuracy: ", sklearn.metrics.accuracy_score(y_test, y_hat))
+print("72RM Accuracy: ", sklearn.metrics.accuracy_score(y_72RM, y_hat_72RM))
 print("72 Accuracy: ", sklearn.metrics.accuracy_score(y_72, y_hat_72))
 print("LUNGx Accuracy: ", sklearn.metrics.accuracy_score(y_lungx_test, y_hat_lungx))
 
