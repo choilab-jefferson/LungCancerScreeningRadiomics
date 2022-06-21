@@ -24,12 +24,12 @@ def task_organize_images(image_file):
     case_output_dir = osp.join(output_dir, pid)
     os.makedirs(case_output_dir, exist_ok=True)
     nodule_mask_files = glob.glob(
-        osp.join(dirname, pid, pid+'_CT*-seg-label.nrrd'))
+        osp.join(dirname, pid, pid+'_CT*-seg-iso-label.nrrd'))
     input_image = sitk.ReadImage(osp.join(image_file))
     for nodule_mask_file in nodule_mask_files:
         print(nodule_mask_file)
         basename = osp.basename(nodule_mask_file)
-        input_image_crop_file = nodule_mask_file.replace('-seg-label', '')
+        input_image_crop_file = nodule_mask_file.replace('-seg-iso-label', '')
         ard_file = nodule_mask_file.replace('label', 'ard')
         ard_surface_file = nodule_mask_file.replace('label', 'ard-surface')
         peaks_file = nodule_mask_file.replace('label', 'peaks-label')

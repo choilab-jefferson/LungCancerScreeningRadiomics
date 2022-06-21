@@ -11,8 +11,6 @@ addpath(genpath('spiculation_detection'))
 
 %% set values
 experiment_set = 'nodule-lungx';
-esph_factor = (3/(4*pi))^(1/3);
-subset = '';%'_smooth';
 
 %% directory paths
 experiment_path = [data_path '/' experiment_set];
@@ -21,8 +19,8 @@ if ~isdir(output_experiment_path); mkdir(output_experiment_path); end
 if ~isdir([output_experiment_path '/spiculation']); mkdir([output_experiment_path '/spiculation']); end
 if ~isdir([output_experiment_path '/parameters']); mkdir([output_experiment_path '/parameters']); end
 
-obj_path = [experiment_path '/objs' subset];
-sph_map_path = [experiment_path '/spherical_obj' subset];
+obj_path = [experiment_path '/objs'];
+sph_map_path = [experiment_path '/spherical_obj'];
 dir_obj = dir([obj_path '/*.obj']);
 pid_list = {dir_obj.name};
 

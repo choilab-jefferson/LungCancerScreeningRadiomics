@@ -10,7 +10,6 @@ set_environment; % call environment setting
 % experiment_set = 'nodule-radiomics_72';
 
 experiment_set = 'nodule-lidc';
-
 sz_bbox = 200;
 smooth = true;
 

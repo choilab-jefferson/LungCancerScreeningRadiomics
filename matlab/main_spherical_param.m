@@ -11,20 +11,12 @@ addpath(genpath('util'))
 
 %% set values
 experiment_set = 'nodule-lidc';
-esph_factor = (3/(4*pi))^(1/3);
-
 
 %% directory paths
-subset = '';
 experiment_path = [data_path '/' experiment_set];
+obj_path = [experiment_path '/objs'];
+sph_map_path = [experiment_path '/spherical_obj'];
 
-if strfind(subset,'seg')
-    obj_path = [experiment_path '/objs_seg'];
-    sph_map_path = [experiment_path '/spherical_obj_seg'];
-else
-    obj_path = [experiment_path '/objs'];
-    sph_map_path = [experiment_path '/spherical_obj'];
-end
 if ~isdir(sph_map_path); mkdir(sph_map_path); end
 dir_obj = dir([obj_path '/*.obj']);
 pid_list = {dir_obj.name};

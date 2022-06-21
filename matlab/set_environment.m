@@ -20,7 +20,7 @@ ConformalizedMCF = ['docker run -v ' tempdir ':' tempdir ' wookjinchoi/conformal
 
 % 
 esph_factor = (3/(4*pi))^(1/3);
-iso = ''; % '-iso'; '-1mm';
+iso = '-iso'; % '-1mm';
 
 
 % module path values
