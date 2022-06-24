@@ -1,10 +1,10 @@
-function [peaks] = detect_baselines(s, nd)
-    % initialize peaks
-    peaks = struct('baseline',{},'vertices',{},'rims',{},'l_center',{},'l_normal',{},'apex',{},'height',{},'width',{},'angle',{});
+function [spikes] = detect_baselines(s, nd)
+    % initialize spikes
+    spikes = struct('baseline',{},'vertices',{},'rims',{},'l_center',{},'l_normal',{},'apex',{},'height',{},'width',{},'angle',{});
     
     s_base = s;
     n_negative = sum(nd(s.faces) <= 0,2); % count negative area distortion vertices for each face
-    s_base.faces = s.faces(n_negative>0,:); % if any can be a part of peak
+    s_base.faces = s.faces(n_negative>0,:); % if any can be a part of spike
     baseline_f = find(n_negative>0);
    
     %% labeling vertices of baseline faces
@@ -41,23 +41,23 @@ function [peaks] = detect_baselines(s, nd)
         nr = numel(rims);
         for ri = 1:nr
             rim = rims{ri};
-            peaks(pki).type = 0;
-            peaks(pki).baseline = rim;
-            peaks(pki).baseline_curve = s.vertices(rim([1:end,1]),:);            
-            peaks(pki).apex = 0;
-            peaks(pki).rims = {rim};
-            peaks(pki).vertices = baseline_v(label == ci);
-            peaks(pki).peak_vertices = peaks(pki).vertices;
-            peaks(pki).faces = baseline_f(flabel == ci);
+            spikes(pki).type = 0;
+            spikes(pki).baseline = rim;
+            spikes(pki).baseline_curve = s.vertices(rim([1:end,1]),:);            
+            spikes(pki).apex = 0;
+            spikes(pki).rims = {rim};
+            spikes(pki).vertices = baseline_v(label == ci);
+            spikes(pki).spike_vertices = spikes(pki).vertices;
+            spikes(pki).faces = baseline_f(flabel == ci);
             [center,normal] = calcaulte_center_normal(s.vertices(rim,:));
-            peaks(pki).l_center = [peaks(pki).l_center;center];
-            peaks(pki).l_normal = [peaks(pki).l_normal;normal];
-            peaks(pki).center = center;
-            peaks(pki).normal = normal;
-            peaks(pki).angle = 0;
-            peaks(pki).height = 0;
-            peaks(pki).height1 = 0;
-            peaks(pki).width = 0;
+            spikes(pki).l_center = [spikes(pki).l_center;center];
+            spikes(pki).l_normal = [spikes(pki).l_normal;normal];
+            spikes(pki).center = center;
+            spikes(pki).normal = normal;
+            spikes(pki).angle = 0;
+            spikes(pki).height = 0;
+            spikes(pki).height1 = 0;
+            spikes(pki).width = 0;
             
             pki=pki+1;
             % plot3(s.vertices(rim([1:end,1]),1),s.vertices(rim([1:end,1]),2),s.vertices(rim([1:end,1]),3),'-'), hold on

@@ -1,14 +1,14 @@
-function [peaks,t]=baseline_detection(peaks, s, nd, Ne)
-    n_peaks = numel(peaks);
+function [spikes,t]=baseline_detection(spikes, s, nd, Ne)
+    n_spikes = numel(spikes);
     t = zeros(size(nd));
     nd1 = nd;
     for vi = 1:numel(nd)
         nd1(vi) = mean(nd([Ne{vi};vi]));
     end
-    for pki = 1:n_peaks % check negibourhoond
+    for pki = 1:n_spikes % check negibourhoond
         count = 1;
         t1 = zeros(size(nd));
-        ppi = peaks(pki).apex;
+        ppi = spikes(pki).apex;
         %if t(ppi)>0, continue; end
         t1(ppi) = 1;
         ne = cell2mat(Ne(ppi));
@@ -42,10 +42,10 @@ function [peaks,t]=baseline_detection(peaks, s, nd, Ne)
             ne = nne(t1(nne)==0);
         end
 
-        %peaks(pki).baseline = [s.vertices(t1==3,:);s.vertices(t1==2,:)];
-        peaks(pki).baseline = find(t1==2);
-        peaks(pki).vertices = find(t1>0&t1<3)';
-        %peak_v{pki} = nd(t1>0);
+        %spikes(pki).baseline = [s.vertices(t1==3,:);s.vertices(t1==2,:)];
+        spikes(pki).baseline = find(t1==2);
+        spikes(pki).vertices = find(t1>0&t1<3)';
+        %spike_v{pki} = nd(t1>0);
 
         t(ppi) = 4;
         t=bitor(t,t1);

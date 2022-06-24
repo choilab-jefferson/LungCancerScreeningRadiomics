@@ -25,7 +25,7 @@ dir_obj = dir([obj_path '/*.obj']);
 pid_list = {dir_obj.name};
 
 features = table();
-all_peaks = table();
+all_spikes = table();
 merged_nodule_info = [];
 %% main process
 for idx = 1:size(pid_list,2)
@@ -70,12 +70,12 @@ for idx = 1:size(pid_list,2)
     xlim([-0.1,1.1])
     
     h1= subplot(233);
-    for pki = 1:num_peaks
-        %if numel(peaks(pki).baseline_curve) == 0, continue; end
-        plot3(peaks(pki).baseline_curve(:,1),peaks(pki).baseline_curve(:,2),peaks(pki).baseline_curve(:,3),'r' ); hold on;
-        %plot3(peaks(pki).fwhm_baseline_curve(:,1),peaks(pki).fwhm_baseline_curve(:,2),peaks(pki).fwhm_baseline_curve(:,3),'y' ); hold on;
-        %plot3(peaks(pki).line_peak_base(:,1),peaks(pki).line_peak_base(:,2),peaks(pki).line_peak_base(:,3),'k'); hold on;
-        plot3(peaks(pki).l_center(:,1),peaks(pki).l_center(:,2),peaks(pki).l_center(:,3),'k'); hold on;
+    for pki = 1:num_spikes
+        %if numel(spikes(pki).baseline_curve) == 0, continue; end
+        plot3(spikes(pki).baseline_curve(:,1),spikes(pki).baseline_curve(:,2),spikes(pki).baseline_curve(:,3),'r' ); hold on;
+        %plot3(spikes(pki).fwhm_baseline_curve(:,1),spikes(pki).fwhm_baseline_curve(:,2),spikes(pki).fwhm_baseline_curve(:,3),'y' ); hold on;
+        %plot3(spikes(pki).line_spike_base(:,1),spikes(pki).line_spike_base(:,2),spikes(pki).line_spike_base(:,3),'k'); hold on;
+        plot3(spikes(pki).l_center(:,1),spikes(pki).l_center(:,2),spikes(pki).l_center(:,3),'k'); hold on;
         text(l_loc(pki,1),l_loc(pki,2),l_loc(pki,3),num2str(pki));
     end
 
@@ -101,31 +101,31 @@ for idx = 1:size(pid_list,2)
     [n,x]=hist(nd, 32);
     bar(x,n./sum(n),0.5); hold on;
     alpha(0.6)
-    if numel([peaks.apex]) > 0
-        [~,mi] = min(pdist2(x',nd([peaks.apex])));
+    if numel([spikes.apex]) > 0
+        [~,mi] = min(pdist2(x',nd([spikes.apex])));
         if numel(mi) > 0
-            x1 = nd(unique(cell2mat({peaks(spiculation).vertices}')));
+            x1 = nd(unique(cell2mat({spikes(spiculation).vertices}')));
             [n1]=hist(x1(x1<mean(x1)), x);
             bar(x,n1./sum(n),0.5,'r','EdgeColor','none')
             alpha(0.6)
-            plot(nd([peaks(spiculation).apex]),n1(mi(spiculation))./sum(n),'r*')
-            %[n1]=hist(l_ArD(peaks(spiculation)), x);
+            plot(nd([spikes(spiculation).apex]),n1(mi(spiculation))./sum(n),'r*')
+            %[n1]=hist(l_ArD(spikes(spiculation)), x);
             %bar(x,n1./sum(n),0.5,'r','EdgeColor','r')
 
-            x1 = nd(unique(cell2mat({peaks(lobulation).vertices}')));
+            x1 = nd(unique(cell2mat({spikes(lobulation).vertices}')));
             [n1]=hist(x1(x1<mean(x1)), x);
             bar(x,n1./sum(n),0.5,'m','EdgeColor','none')
             alpha(0.6)
-            plot(nd([peaks(lobulation).apex]),n1(mi(lobulation))./sum(n),'m*')
-            %[n1]=hist(l_ArD(peaks(lobulation)), x);
+            plot(nd([spikes(lobulation).apex]),n1(mi(lobulation))./sum(n),'m*')
+            %[n1]=hist(l_ArD(spikes(lobulation)), x);
             %bar(x,n1./sum(n),0.5,'m','EdgeColor','m')
 
-            x1 = nd(unique(cell2mat({peaks(~(spiculation|lobulation)).vertices}')));
+            x1 = nd(unique(cell2mat({spikes(~(spiculation|lobulation)).vertices}')));
             [n1]=hist(x1(x1<mean(x1)), x);
             bar(x,n1./sum(n),0.5,'y','EdgeColor','none')
             alpha(0.6)
-            plot(nd([peaks(~(lobulation|spiculation)).apex]),n1(mi(~(lobulation|spiculation)))./sum(n),'c*')
-            %[n1]=hist(l_ArD(peaks(~(lobulation|spiculation))), x);
+            plot(nd([spikes(~(lobulation|spiculation)).apex]),n1(mi(~(lobulation|spiculation)))./sum(n),'c*')
+            %[n1]=hist(l_ArD(spikes(~(lobulation|spiculation))), x);
             %
         end
     end
@@ -199,14 +199,14 @@ for idx = 1:size(pid_list,2)
     view(-37.5,30);
     colorbar('eastoutside', 'YAxisLocation', 'right');
     axis equal fill
-    title('Peak detection (front)')
+    title('spike detection (front)')
     %camlight;  camlight(-80,-10); lighting phong;
 
 
     subplot(234),
     %colors = (diff_area>-0.5).*sharpness;
     %colors = l_ArD;
-    l_loc1 = s1.vertices([peaks.apex],:);
+    l_loc1 = s1.vertices([spikes.apex],:);
     %patch(s1, 'FaceAlpha',1,'FaceColor','green', 'EdgeColor', 'interp'); hold on
     %patch(s1,'FaceColor','red','FaceAlpha',0.5,'EdgeColor','none'); hold on
     title('Spherical Mapping')
@@ -220,12 +220,12 @@ for idx = 1:size(pid_list,2)
 
 
     h2 = subplot(236);
-    for pki = 1:num_peaks
-        %if numel(peaks(pki).baseline_curve) == 0, continue; end
-        plot3(peaks(pki).baseline_curve(:,1),peaks(pki).baseline_curve(:,2),peaks(pki).baseline_curve(:,3),'r' ); hold on;
-        %plot3(peaks(pki).fwhm_baseline_curve(:,1),peaks(pki).fwhm_baseline_curve(:,2),peaks(pki).fwhm_baseline_curve(:,3),'y' ); hold on;
-        %plot3(peaks(pki).line_peak_base(:,1),peaks(pki).line_peak_base(:,2),peaks(pki).line_peak_base(:,3),'k'); hold on;
-        plot3(peaks(pki).l_center(:,1),peaks(pki).l_center(:,2),peaks(pki).l_center(:,3),'k'); hold on;
+    for pki = 1:num_spikes
+        %if numel(spikes(pki).baseline_curve) == 0, continue; end
+        plot3(spikes(pki).baseline_curve(:,1),spikes(pki).baseline_curve(:,2),spikes(pki).baseline_curve(:,3),'r' ); hold on;
+        %plot3(spikes(pki).fwhm_baseline_curve(:,1),spikes(pki).fwhm_baseline_curve(:,2),spikes(pki).fwhm_baseline_curve(:,3),'y' ); hold on;
+        %plot3(spikes(pki).line_spike_base(:,1),spikes(pki).line_spike_base(:,2),spikes(pki).line_spike_base(:,3),'k'); hold on;
+        plot3(spikes(pki).l_center(:,1),spikes(pki).l_center(:,2),spikes(pki).l_center(:,3),'k'); hold on;
         text(l_loc(pki,1),l_loc(pki,2),l_loc(pki,3),num2str(pki));
     end
 %     patch(s1, 'FaceVertexCData',l_ArD,'FaceAlpha',0.8,'FaceColor','interp', 'EdgeColor', 'interp');view(-37.5,30);
@@ -244,14 +244,14 @@ for idx = 1:size(pid_list,2)
     view(-37.5+180,30);
     colorbar('eastoutside', 'YAxisLocation', 'right');
     axis equal fill
-    title('Peak detection (back)')
+    title('spike detection (back)')
     
     
     
     title_text = [id,' S', num2str(n_info.Spiculation),' M',num2str(n_info.Malignancy),' Volume:',num2str(volume/1000,'%0.2f'),'cc, D:',num2str(esr*2,'%0.2f'), ...
-        'mm, Roundness:',num2str(roundness,'%0.2f'),', #Peaks:',num2str(num_peaks),', #Spiculation:',num2str(sum(spiculation)),', S1:',num2str(spic1,'%0.2f'),', S2:',num2str(spic2,'%0.2f'), ...
+        'mm, Roundness:',num2str(roundness,'%0.2f'),', #Spikes:',num2str(num_spikes),', #Spiculation:',num2str(sum(spiculation)),', S1:',num2str(spic1,'%0.2f'),', S2:',num2str(spic2,'%0.2f'), ...
         ', S3:',num2str(spic3,'%0.2f'),', S4:',num2str(spic4,'%0.2f')];
-    %titile_text = [id,' Volume:',num2str(volume/1000,2),'cc, D:',num2str(esr*2),'mm, #Peaks:',num2str(num_peaks),', Roundness:',num2str(roundness,2)];
+    %titile_text = [id,' Volume:',num2str(volume/1000,2),'cc, D:',num2str(esr*2),'mm, #Spikes:',num2str(num_spikes),', Roundness:',num2str(roundness,2)];
     h = sgtitle(title_text); set(h, 'FontSize',12,'Interpreter','none');
     
 
@@ -269,5 +269,5 @@ for idx = 1:size(pid_list,2)
     close all
     toc
 end
-writetable(all_peaks, [output_experiment_path '/spiculation/peaks.csv']);
+writetable(all_spikes, [output_experiment_path '/spiculation/spikes.csv']);
 writetable(features, [output_experiment_path '/spiculation/features.csv']);

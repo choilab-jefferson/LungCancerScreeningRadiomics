@@ -22,7 +22,7 @@ dir_obj = dir([obj_path '/*.obj']);
 pid_list = {dir_obj.name};
 
 features = table();
-all_peaks = table();
+all_spikes = table();
 merged_nodule_info = [];
 %% main process
 for idx = 1:size(pid_list,2)

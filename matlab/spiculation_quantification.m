@@ -152,97 +152,97 @@ if 0 % Gaussian fitting with censoring
 end
 nd = (l_ArD - muhat)/sigmahat;
 
-%% peak detection by mean curvature
+%% spike detection by mean curvature
 if 0
-    peaks_old = spiculation_detection_mean_curvature(Cmean, Cgaussian, Ne, s, s1, nd);
+    spikes_old = spiculation_detection_mean_curvature(Cmean, Cgaussian, Ne, s, s1, nd);
 end
 
-%% peak detection
-[peaks] = detect_baselines(s, nd);
-[peaks] = detect_peaks(s, s1, Ne, nd, peaks);
+%% spike detection
+[spikes] = detect_baselines(s, nd);
+[spikes] = detect_spikes(s, s1, Ne, nd, spikes);
 
-%% measuring heights and widths of the peaks
-[peaks] = measure_peaks(peaks,s,nd,l_ArD,attached_vertices);
+%% measuring heights and widths of the spikes
+[spikes] = measure_spikes(spikes,s,nd,l_ArD,attached_vertices);
 
 
 %%
-%figure, hist([peaks.height])
-[num_peaks,l_height,l_width,l_angle,l_nheight,l_nwidth,l_rimchange, ...
-      spic_ap,spic_bp,spic1p,spic2p,spic3p,spic4p,hx,hn] = extract_spiculation_features(peaks, esr);
+%figure, hist([spikes.height])
+[num_spikes,l_height,l_width,l_angle,l_nheight,l_nwidth,l_rimchange, ...
+      spic_ap,spic_bp,spic1p,spic2p,spic3p,spic4p,hx,hn] = extract_spiculation_features(spikes, esr);
 nhn = hn / sum(hn);
 
-%% convert peaks structure to table
-if num_peaks > 0
-    if num_peaks > 1
-        peaks_table = struct2table(peaks);
+%% convert spikes structure to table
+if num_spikes > 0
+    if num_spikes > 1
+        spikes_table = struct2table(spikes);
     else
-        peaks(2) = peaks(1);
-        peaks_table = struct2table(peaks);
-        peaks_table = peaks_table(1,:);
-        peaks(2) = [];
+        spikes(2) = spikes(1);
+        spikes_table = struct2table(spikes);
+        spikes_table = spikes_table(1,:);
+        spikes(2) = [];
     end
-    peaks_table.PID = repmat({pid},num_peaks,1);
-    peaks_table.NID = repmat({nid},num_peaks,1);
-    peaks_table.D = repmat(esr*2,num_peaks,1);
-    peaks_table.volume = repmat(volume/1000,num_peaks,1);
-    peaks_table.nd = nd(peaks_table.apex);
-    peaks_table.rimchange = l_rimchange';
-    peaks_table.nrimchange = l_rimchange'./(l_height'+1);
+    spikes_table.PID = repmat({pid},num_spikes,1);
+    spikes_table.NID = repmat({nid},num_spikes,1);
+    spikes_table.D = repmat(esr*2,num_spikes,1);
+    spikes_table.volume = repmat(volume/1000,num_spikes,1);
+    spikes_table.nd = nd(spikes_table.apex);
+    spikes_table.rimchange = l_rimchange';
+    spikes_table.nrimchange = l_rimchange'./(l_height'+1);
     if numel(n_info) > 0
-        peaks_table.spic = repmat(n_info.Spiculation,num_peaks,1);
-        peaks_table.lobul = repmat(n_info.Lobulation,num_peaks,1);
-        peaks_table.malig = repmat(n_info.Malignancy,num_peaks,1);
-        peaks_table = peaks_table(:,{'PID','NID','spic','lobul','malig','volume','D','nd','nrimchange','apex','height','width','angle'});
+        spikes_table.spic = repmat(n_info.Spiculation,num_spikes,1);
+        spikes_table.lobul = repmat(n_info.Lobulation,num_spikes,1);
+        spikes_table.malig = repmat(n_info.Malignancy,num_spikes,1);
+        spikes_table = spikes_table(:,{'PID','NID','spic','lobul','malig','volume','D','nd','nrimchange','apex','height','width','angle'});
     else
-        peaks_table = peaks_table(:,{'PID','NID','volume','D','nd','nrimchange','apex','height','width','angle'});
+        spikes_table = spikes_table(:,{'PID','NID','volume','D','nd','nrimchange','apex','height','width','angle'});
     end
     
-    disp(peaks_table)
-    all_peaks = [all_peaks; peaks_table];
+    disp(spikes_table)
+    all_spikes = [all_spikes; spikes_table];
 end
 
 
-%% remove small peaks
-selected_peaks = l_height > th_noise & l_width > th_noise/2;
-peaks = peaks(selected_peaks);
-num_peaks = numel(peaks);
-fprintf('number of peaks %d\n', num_peaks)
+%% remove small spikes
+selected_spikes = l_height > th_noise & l_width > th_noise/2;
+spikes = spikes(selected_spikes);
+num_spikes = numel(spikes);
+fprintf('number of spikes %d\n', num_spikes)
 
 %%
-l_loc = s.vertices([peaks.apex],:); % list of apex coordinates
+l_loc = s.vertices([spikes.apex],:); % list of apex coordinates
 
 
-%% peak classification, spiculation or lobulation
-spiculation = [peaks.type]==0;
-lobulation = [peaks.type]==1;
-attached = [peaks.type]==3;
+%% spike classification, spiculation or lobulation
+spiculation = [spikes.type]==0;
+lobulation = [spikes.type]==1;
+attached = [spikes.type]==3;
 
 
 %% recalculate features
-[num_peaks,l_height,l_width,l_angle,l_nheight,l_nwidth,l_rimchange, ...
-      spic_a,spic_b,spic1,spic2,spic3,spic4,hx1,hn1] = extract_spiculation_features(peaks, esr);
+[num_spikes,l_height,l_width,l_angle,l_nheight,l_nwidth,l_rimchange, ...
+      spic_a,spic_b,spic1,spic2,spic3,spic4,hx1,hn1] = extract_spiculation_features(spikes, esr);
 nhn1 = hn1 / sum(hn1);
 
 
 %% save important parameters
 dlmwrite([output_experiment_path '/parameters/' pid '_' nid '_nd.txt'],nd);
 dlmwrite([output_experiment_path '/parameters/' pid '_' nid '_attached.txt'], attached_vertices);
-dlmwrite([output_experiment_path '/parameters/' pid '_' nid '_apex.txt'],[peaks.apex]');
+dlmwrite([output_experiment_path '/parameters/' pid '_' nid '_apex.txt'],[spikes.apex]');
 
-%% save apex point of peaks and area distortion for slicer
+%% save apex point of spikes and area distortion for slicer
 fid = fopen([output_experiment_path '/parameters/' pid '_' nid '.fcsv'],'w');
 fprintf(fid, '# Markups fiducial file version = 4.8\n');
 fprintf(fid, '# CoordinateSystem = 0\n');
 fprintf(fid, '# columns = id,x,y,z,ow,ox,oy,oz,vis,sel,lock,label,desc,associatedNodeID\n');
-for pki = 1:num_peaks
-    if peaks(pki).type == 0
-        fprintf(fid, 'vtkMRMLMarkupsFiducialNode_%d,%f,%f,%f,0,0,0,0,1,1,1,S%d,"AD %0.2f",vtkMRMLScalarVolumeNode1\n',pki,l_loc(pki,1),l_loc(pki,2),l_loc(pki,3),pki,nd(peaks(pki).apex));
-    elseif peaks(pki).type == 1
-        fprintf(fid, 'vtkMRMLMarkupsFiducialNode_%d,%f,%f,%f,0,0,0,0,1,0,2,L%d,"AD %0.2f",vtkMRMLScalarVolumeNode1\n',pki,l_loc(pki,1),l_loc(pki,2),l_loc(pki,3),pki,nd(peaks(pki).apex));
-    elseif peaks(pki).type == 2
-        fprintf(fid, 'vtkMRMLMarkupsFiducialNode_%d,%f,%f,%f,0,0,0,0,0,0,2,C%d,"AD %0.2f",vtkMRMLScalarVolumeNode1\n',pki,l_loc(pki,1),l_loc(pki,2),l_loc(pki,3),pki,nd(peaks(pki).apex));
-    elseif peaks(pki).type == 3
-        fprintf(fid, 'vtkMRMLMarkupsFiducialNode_%d,%f,%f,%f,0,0,0,0,0,0,2,A%d,"AD %0.2f",vtkMRMLScalarVolumeNode1\n',pki,l_loc(pki,1),l_loc(pki,2),l_loc(pki,3),pki,nd(peaks(pki).apex));
+for pki = 1:num_spikes
+    if spikes(pki).type == 0
+        fprintf(fid, 'vtkMRMLMarkupsFiducialNode_%d,%f,%f,%f,0,0,0,0,1,1,1,S%d,"AD %0.2f",vtkMRMLScalarVolumeNode1\n',pki,l_loc(pki,1),l_loc(pki,2),l_loc(pki,3),pki,nd(spikes(pki).apex));
+    elseif spikes(pki).type == 1
+        fprintf(fid, 'vtkMRMLMarkupsFiducialNode_%d,%f,%f,%f,0,0,0,0,1,0,2,L%d,"AD %0.2f",vtkMRMLScalarVolumeNode1\n',pki,l_loc(pki,1),l_loc(pki,2),l_loc(pki,3),pki,nd(spikes(pki).apex));
+    elseif spikes(pki).type == 2
+        fprintf(fid, 'vtkMRMLMarkupsFiducialNode_%d,%f,%f,%f,0,0,0,0,0,0,2,C%d,"AD %0.2f",vtkMRMLScalarVolumeNode1\n',pki,l_loc(pki,1),l_loc(pki,2),l_loc(pki,3),pki,nd(spikes(pki).apex));
+    elseif spikes(pki).type == 3
+        fprintf(fid, 'vtkMRMLMarkupsFiducialNode_%d,%f,%f,%f,0,0,0,0,0,0,2,A%d,"AD %0.2f",vtkMRMLScalarVolumeNode1\n',pki,l_loc(pki,1),l_loc(pki,2),l_loc(pki,3),pki,nd(spikes(pki).apex));
     end
 end
 fclose(fid);
@@ -255,7 +255,7 @@ fclose(fid);
 hnames = strsplit(sprintf('h%d ',1:10));
 nhnames = strsplit(sprintf('nh%d ',1:10));
 
-f = table(idx,{pid},{nid},num_peaks,sum(spiculation),sum(lobulation), sum(attached), mean(attachment), ...
+f = table(idx,{pid},{nid},num_spikes,sum(spiculation),sum(lobulation), sum(attached), mean(attachment), ...
         volume,area,esr*2,roundness,spic_a, spic_b, spic_ap, spic_bp, ...
         spic1,spic2,spic3,spic4,spic1p,spic2p,spic3p,spic4p,...
         min(l_GC),max(l_GC),median(l_GC),mean(l_GC),var(l_GC),skewness(l_GC),kurtosis(l_GC), ...
@@ -270,7 +270,7 @@ f = table(idx,{pid},{nid},num_peaks,sum(spiculation),sum(lobulation), sum(attach
         min(l_nwidth), max(l_nwidth),median(l_nwidth),mean(l_nwidth),var(l_nwidth),skewness(l_nwidth),kurtosis(l_nwidth), ...
         hn(1),hn(2),hn(3),hn(4),hn(5),hn(6),hn(7),hn(8),hn(9),hn(10), ...
         nhn(1),nhn(2),nhn(3),nhn(4),nhn(5),nhn(6),nhn(7),nhn(8),nhn(9),nhn(10), ...
-        'VariableNames',{'No','PID','NID','num_peaks','num_spic','num_lobul','num_attached','attachment', ...
+        'VariableNames',{'No','PID','NID','num_spikes','num_spic','num_lobul','num_attached','attachment', ...
         'volume','area','eqv_sph_D','roundness','spic_a','spic_b','spic_ap','spic_bp', ...
         'spic1','spic2','spic3','spic4','spic1p','spic2p','spic3p','spic4p', ...
         'min_GC','max_GC','med_GC','mean_GC','var_GC','skew_GC','kurt_GC', ...

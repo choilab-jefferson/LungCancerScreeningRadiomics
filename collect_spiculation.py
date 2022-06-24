@@ -32,8 +32,8 @@ def task_organize_images(image_file):
         input_image_crop_file = nodule_mask_file.replace('-seg-iso-label', '')
         ard_file = nodule_mask_file.replace('label', 'ard')
         ard_surface_file = nodule_mask_file.replace('label', 'ard-surface')
-        peaks_file = nodule_mask_file.replace('label', 'peaks-label')
-        peaks_surface_file = nodule_mask_file.replace('label', 'peaks-surface')
+        spikes_file = nodule_mask_file.replace('label', 'spikes-label')
+        spikes_surface_file = nodule_mask_file.replace('label', 'spikes-surface')
 
         mask_image = sitk.ReadImage(nodule_mask_file)
         input_image_crop = sitk.RegionOfInterest(input_image, mask_image.GetSize(
@@ -49,10 +49,10 @@ def task_organize_images(image_file):
                 case_output_dir, osp.basename(ard_file))},
             {'src': ard_surface_file, 'dest': osp.join(
                 case_output_dir, osp.basename(ard_surface_file))},
-            {'src': peaks_file, 'dest': osp.join(
-                case_output_dir, osp.basename(peaks_file))},
-            {'src': peaks_surface_file, 'dest': osp.join(
-                case_output_dir, osp.basename(peaks_surface_file))},
+            {'src': spikes_file, 'dest': osp.join(
+                case_output_dir, osp.basename(spikes_file))},
+            {'src': spikes_surface_file, 'dest': osp.join(
+                case_output_dir, osp.basename(spikes_surface_file))},
         ]
 
         for copy in copylist:

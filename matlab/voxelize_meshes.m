@@ -1,15 +1,15 @@
-%% Map area distortion to peaks
+%% Map area distortion to spikes
 a = nd;
 b = nd;
 a(:)=0;
 b(nd<0)=0;
-for pki = 1:num_peaks
-    if numel(peaks(pki).peak_vertices) > 4
-        a(peaks(pki).peak_vertices) = peaks(pki).type+1;
-        if peaks(pki).type == 2
-            b(peaks(pki).peak_vertices) = -nd(peaks(pki).peak_vertices);
+for pki = 1:num_spikes
+    if numel(spikes(pki).spike_vertices) > 4
+        a(spikes(pki).spike_vertices) = spikes(pki).type+1;
+        if spikes(pki).type == 2
+            b(spikes(pki).spike_vertices) = -nd(spikes(pki).spike_vertices);
         else
-            b(peaks(pki).peak_vertices) = nd(peaks(pki).peak_vertices);
+            b(spikes(pki).spike_vertices) = nd(spikes(pki).spike_vertices);
         end
     end
 end
@@ -42,24 +42,24 @@ test_3d=test_3d.*B;
 fn_nrrdwrite([experiment_path '/' pid '/' pid '_CT_' nid '-seg-ard-surface' iso '.nrrd'], test_3d, meta);
 
 
-%% voxelize peak classifications
+%% voxelize spike classifications
 test_3d(:)=0;    
-for pki = 1:num_peaks
-    peaks_A = peaks(pki).l_center(1:end-1,:);
-    peaks_B = peaks(pki).l_center(2:end,:);
+for pki = 1:num_spikes
+    spikes_A = spikes(pki).l_center(1:end-1,:);
+    spikes_B = spikes(pki).l_center(2:end,:);
     X = segmented_voxels;
-    normals = peaks_A-peaks_B;
+    normals = spikes_A-spikes_B;
     d = sum(normals,2);
-    normals = normals(d~=0,:); peaks_A = peaks_A(d~=0,:); peaks_B = peaks_B(d~=0,:);
+    normals = normals(d~=0,:); spikes_A = spikes_A(d~=0,:); spikes_B = spikes_B(d~=0,:);
     for ni = 1:size(normals,1)
-        D2 = abs(normals(ni,:)*(X-peaks_B(ni,:))')./sqrt(sum(normals(ni,:).^2));
+        D2 = abs(normals(ni,:)*(X-spikes_B(ni,:))')./sqrt(sum(normals(ni,:).^2));
         voxels = D2<max(meta.pixelspacing)*2;
         svoxels = S.PixelIdxList(voxels);
-        D3=dist([s.vertices(peaks(pki).peak_vertices,:);peaks(    pki).l_center],segmented_voxels(voxels,:)');
+        D3=dist([s.vertices(spikes(pki).spike_vertices,:);spikes(    pki).l_center],segmented_voxels(voxels,:)');
         minD3 = min(D3);
-        test_3d(svoxels(minD3<peaks(pki).width*2/3))=peaks(pki).type+1;
+        test_3d(svoxels(minD3<spikes(pki).width*2/3))=spikes(pki).type+1;
     end
 end
-fn_nrrdwrite([experiment_path '/' pid '/' pid '_CT_' nid '-seg-peaks' iso '-label.nrrd'], test_3d, meta);
+fn_nrrdwrite([experiment_path '/' pid '/' pid '_CT_' nid '-seg-spikes' iso '-label.nrrd'], test_3d, meta);
 test_3d=test_3d.*B;
-fn_nrrdwrite([experiment_path '/' pid '/' pid '_CT_' nid '-seg-peaks-surface' iso '.nrrd'], test_3d, meta);
+fn_nrrdwrite([experiment_path '/' pid '/' pid '_CT_' nid '-seg-spikes-surface' iso '.nrrd'], test_3d, meta);
