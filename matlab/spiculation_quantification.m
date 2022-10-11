@@ -1,10 +1,3 @@
-if ~exist('refine','var')
-    refine = false;
-end
-if ~exist('smooth','var')
-    smooth = false;
-end
-
 th_noise = 3;
 
 results = table();
@@ -32,16 +25,12 @@ try
     end
 
     [s.vertices,s.faces] = readOBJ(obj_filename);
-    if refine, s = refinepatch(s); end
-    if smooth, s = smoothpatch(s,1,1); end
     try
         [s1.vertices,s1.faces,~,normals] = read_obj_colors(sph_map_filename);
     catch
         [s1.vertices,s1.faces] = readOBJ(sph_map_filename);
         [normals,normals_f] = patchnormals(s1);
     end
-    if refine, s1 = refinepatch(s1); end
-    if smooth, s1 = smoothpatch(s1,1,1); end
     assert(numel(s.vertices)==numel(s1.vertices));
 catch exception
     if ~exist(obj_filename, 'file')
