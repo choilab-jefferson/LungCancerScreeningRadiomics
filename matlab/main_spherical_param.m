@@ -55,15 +55,7 @@ for idx = 1:size(pid_list,2)
         obj_filename = [obj_path '/' pid '.obj'];
         sph_map_filename = [sph_map_path '/' pid '_spherical.obj'];
     end
-    [s.vertices,s.faces] = readOBJ(obj_filename);
-    if refine, s = refinepatch(s); end
-    if smooth, s = smoothpatch(s,1,1); end
-    temp_ply = [tempdir experiment_set subset '.ply'];
-    writePLY(temp_ply, s.vertices, s.faces);
-    disp('Spherical parameterization...')
-    system([ConformalizedMCF ' --in ' temp_ply ' --outHeader ' tempdir ' --steps 3000 --threads 1']);
-    [s1.vertices,s1.faces] = readPLY([tempdir '.3000.ply']);
-    writeOBJ(sph_map_filename, s1.vertices, s1.faces);
+    spherical_param(sph_map_filename, obj_filename)
     toc
 end
 

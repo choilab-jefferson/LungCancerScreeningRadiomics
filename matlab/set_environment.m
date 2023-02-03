@@ -19,7 +19,6 @@ output_path = 'output/';
 ConformalizedMCF = ['docker run -v ' tempdir ':' tempdir ' wookjinchoi/conformalized_mcf:latest ConformalizedMCF'];
 
 % 
-esph_factor = (3/(4*pi))^(1/3);
 iso_t = '-iso'; % '-1mm';
 
 

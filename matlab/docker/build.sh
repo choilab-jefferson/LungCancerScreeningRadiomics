@@ -1,0 +1,1 @@
+docker build -t choilab/lcsr_matlab:latest .

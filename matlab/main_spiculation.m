@@ -42,10 +42,36 @@ for idx = 1:size(pid_list,2)
     %if numel(strfind(pid, '_'))>0 || numel(strfind(pid, 'Ell'))>0 || ~strcmp(nid,'1'), continue; end
     %if numel(strfind(pid, '0043'))==0, continue; end
     
+    th_noise = 3;
+
+    results = table();
+    tic % tic starts a stopwatch timer
+    try
+        nodule_info = readtable([experiment_path '/' pid '/' pid '_all.csv']);
+        if numel(nids) == 1
+            n_info = nodule_info(nodule_info.nid == str2double(nid),:);
+        else % use original nid if there are multiple segmentations
+            n_info = nodule_info(nodule_info.nid == str2double(nids{1}),:);
+        end
+    catch
+        n_info = [];        
+    end
+
+    if ~isempty(nid)
+        obj_filename = [obj_path '/' pid '_' nid '.obj'];
+        sph_map_filename = [sph_map_path '/' pid '_' nid '_spherical.obj'];
+    else
+        obj_filename = [obj_path '/' pid '.obj'];
+        sph_map_filename = [sph_map_path '/' pid '_spherical.obj'];
+    end
+
 
     %% spiculation quantification
     try
-        spiculation_quantification
+        [spikes_tables, f] = spiculation_quantification(output_experiment_path, obj_filename, sph_map_filename, n_info);
+        all_spikes = [all_spikes; spikes_tables];
+        display(f)
+        features = [features;f];
     catch
         continue
     end

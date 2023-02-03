@@ -51,25 +51,7 @@ parfor idx = 1:size(pid_list,2)
         obj_filename = [obj_path '/' pid '_' nid '.obj'];
         sph_map_filename = [sph_map_path '/' pid '_' nid '_spherical.obj'];
 
-        s = struct();
-        s1 = s;
-        [s.vertices,s.faces] = readOBJ(obj_filename);
-        tempheader = tempname;
-        mkdir(tempheader)
-        temp_ply = [tempheader '/' experiment_set '_' id '_' nid '.ply'];
-        out_header = [tempheader '/out'];
-        writePLY(temp_ply, s.vertices, s.faces);
-        disp('Spherical parameterization...')
-        ConformalizedMCF = ['docker run --user 1007 -v ' tempheader ':' tempheader ' wookjinchoi/conformalized_mcf:latest ConformalizedMCF'];
-        system([ConformalizedMCF ' --in ' temp_ply ' --outHeader ' out_header ' --steps 3000 --threads 1']);
-        [s1.vertices,s1.faces] = readPLY([out_header '.3000.ply']);
-        writeOBJ(sph_map_filename, s1.vertices, s1.faces);
-        delete([tempheader '/*']);
-        [status, message, messageid] = rmdir(tempheader);
-        if status == 0
-            disp(message)
-            disp(messageid)
-        end
+        spherical_param(sph_map_filename, obj_filename)
     catch
         continue
     end
