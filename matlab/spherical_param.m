@@ -12,7 +12,7 @@ function spherical_param(sph_map_filename, obj_filename)
     disp('Spherical parameterization...')
     if isfile('/usr/bin/docker')
         ConformalizedMCF = ['docker run --user 1007 -v ' tempheader ':' tempheader ' wookjinchoi/conformalized_mcf:latest ConformalizedMCF'];
-    catch
+    else 
         ConformalizedMCF = ['ConformalizedMCF'];
     end
     system([ConformalizedMCF ' --in ' temp_ply ' --outHeader ' out_header ' --steps 3000 --threads 1']);
