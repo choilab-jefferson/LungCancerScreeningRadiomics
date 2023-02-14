@@ -46,7 +46,7 @@ for idx = 1:numel(pid_list)
 
     fprintf('%d %s\n', idx, pid);
     label_files = dir([experiment_path '/' pid '/' pid '_CT_*-R1' iso_t '-label.nrrd']);
-    parfor l = 1:numel(label_files)
+    for l = 1:numel(label_files)
         tic
         label_file = label_files(l);
         %% input part

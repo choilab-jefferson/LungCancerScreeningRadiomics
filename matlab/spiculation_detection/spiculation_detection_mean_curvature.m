@@ -1,8 +1,9 @@
-function spikes = spiculation_detection_mean_curvature(Cmean, Cgaussian, Ne, s, s1, nd, usethird)
+function spikes = spiculation_detection_mean_curvature(Cmean, Cgaussian, s, s1, nd, usethird)
     if ~exist('usethird','var')
         usethird = false;
     end
     
+    Ne = vertex_neighbours(s); % generate neighbourhood map
     spike_candidates = find(Cmean>0.5 & abs(Cgaussian)>0.5);
     spikes = spike_candidates;
     medCmean = median(Cmean);
