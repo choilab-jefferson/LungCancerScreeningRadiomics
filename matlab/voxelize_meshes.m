@@ -20,17 +20,14 @@ function [ard_voxel, spike_label] = voxelize_meshes(o_seg_img_3d, meta, s, nd, s
     if size(S.PixelList,2) == 2
         S.PixelList(:,3) = 1;
     end
-    segmented_voxels = S.PixelList.*meta.pixelspacing'+meta.spaceorigin;
-    if meta.spacedirections(3,3) < 0
-        segmented_voxels(:,1:2) = -segmented_voxels(:,1:2);
-    end
+    segmented_voxels = S.PixelList.*[-1, -1, 1]*meta.spacedirections+meta.spaceorigin;
 
     %% voxelize area distortion
     d = normpdf(0,0,sigma);
     ard_voxel=double(o_seg_img_3d);
     ard_voxel(:)=0;  
 
-    if size(segmented_voxels, 1) * size(s.vertices, 1) < 1024*1024*1024*10
+    if size(segmented_voxels, 1) * size(s.vertices, 1) < 1024*1024*1024
         D1 = pdist2(s.vertices,segmented_voxels);
         w1 = normpdf(D1,0,sigma)/d;
         tw1 = sum(w1);

@@ -16,7 +16,7 @@ function [f, spikes_table]  = spiculation_pipeline(pid, nid, filename, n_info, .
             end
             [normals,normals_f] = patchnormals(s1);
         end
-        assert(numel(s.vertices)==numel(s1.vertices));
+        assert(numel(s.faces)==numel(s1.faces));
     catch exception
         if ~exist(obj_filename, 'file')
             display('no obj file')
@@ -130,13 +130,13 @@ function [f, spikes_table]  = spiculation_pipeline(pid, nid, filename, n_info, .
         fprintf(fid, '# columns = id,x,y,z,ow,ox,oy,oz,vis,sel,lock,label,desc,associatedNodeID\n');
         for pki = 1:num_spikes
             if spikes(pki).type == 0
-                fprintf(fid, 'vtkMRMLMarkupsFiducialNode_%d,%f,%f,%f,0,0,0,0,1,1,1,S%d,"AD %0.2f",vtkMRMLScalarVolumeNode1\n',pki,l_loc(pki,1),l_loc(pki,2),l_loc(pki,3),pki,nd(spikes(pki).apex));
+                fprintf(fid, 'vtkMRMLMarkupsFiducialNode_%d,%f,%f,%f,0,0,0,0,1,1,1,S%d,"AD %0.2f",vtkMRMLScalarVolumeNode1\n',pki,-l_loc(pki,1),-l_loc(pki,2),l_loc(pki,3),pki,nd(spikes(pki).apex));
             elseif spikes(pki).type == 1
-                fprintf(fid, 'vtkMRMLMarkupsFiducialNode_%d,%f,%f,%f,0,0,0,0,1,0,2,L%d,"AD %0.2f",vtkMRMLScalarVolumeNode1\n',pki,l_loc(pki,1),l_loc(pki,2),l_loc(pki,3),pki,nd(spikes(pki).apex));
+                fprintf(fid, 'vtkMRMLMarkupsFiducialNode_%d,%f,%f,%f,0,0,0,0,1,0,2,L%d,"AD %0.2f",vtkMRMLScalarVolumeNode1\n',pki,-l_loc(pki,1),-l_loc(pki,2),l_loc(pki,3),pki,nd(spikes(pki).apex));
             elseif spikes(pki).type == 2
-                fprintf(fid, 'vtkMRMLMarkupsFiducialNode_%d,%f,%f,%f,0,0,0,0,0,0,2,C%d,"AD %0.2f",vtkMRMLScalarVolumeNode1\n',pki,l_loc(pki,1),l_loc(pki,2),l_loc(pki,3),pki,nd(spikes(pki).apex));
+                fprintf(fid, 'vtkMRMLMarkupsFiducialNode_%d,%f,%f,%f,0,0,0,0,0,0,2,C%d,"AD %0.2f",vtkMRMLScalarVolumeNode1\n',pki,-l_loc(pki,1),-l_loc(pki,2),l_loc(pki,3),pki,nd(spikes(pki).apex));
             elseif spikes(pki).type == 3
-                fprintf(fid, 'vtkMRMLMarkupsFiducialNode_%d,%f,%f,%f,0,0,0,0,0,0,2,A%d,"AD %0.2f",vtkMRMLScalarVolumeNode1\n',pki,l_loc(pki,1),l_loc(pki,2),l_loc(pki,3),pki,nd(spikes(pki).apex));
+                fprintf(fid, 'vtkMRMLMarkupsFiducialNode_%d,%f,%f,%f,0,0,0,0,0,0,2,A%d,"AD %0.2f",vtkMRMLScalarVolumeNode1\n',pki,-l_loc(pki,1),-l_loc(pki,2),l_loc(pki,3),pki,nd(spikes(pki).apex));
             end
         end
         fclose(fid);

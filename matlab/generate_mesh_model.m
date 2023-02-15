@@ -30,10 +30,7 @@ function s = generate_mesh_model(model_file_path, label_file_path, smooth)
     n = size(s.vertices,1);
     m = size(s.faces,1);
 
-    s.vertices = (s.vertices-1).*repmat(meta.pixelspacing',size(s.vertices,1),1) + repmat(meta.spaceorigin,size(s.vertices,1),1);
-    if meta.spacedirections(3,3) < 0
-        s.vertices(:,1:2) = -s.vertices(:,1:2);
-    end
+    s.vertices = (s.vertices-1).*repmat([-1, -1, 1]*meta.spacedirections,size(s.vertices,1),1) + repmat(meta.spaceorigin,size(s.vertices,1),1);
     if smooth
         s = smoothpatch(s,1,1);
     end
