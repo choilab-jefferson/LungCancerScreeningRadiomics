@@ -21,7 +21,9 @@ function [ard_voxel, spike_label] = voxelize_meshes(o_seg_img_3d, meta, s, nd, s
         S.PixelList(:,3) = 1;
     end
     segmented_voxels = S.PixelList.*meta.pixelspacing'+meta.spaceorigin;
-    segmented_voxels(:,1:2) = -segmented_voxels(:,1:2);
+    if meta.spacedirections(3,3) < 0
+        segmented_voxels(:,1:2) = -segmented_voxels(:,1:2);
+    end
 
     %% voxelize area distortion
     d = normpdf(0,0,sigma);
