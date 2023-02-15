@@ -186,7 +186,7 @@ function [f, spikes_table]  = spiculation_pipeline(pid, nid, filename, n_info, .
             'min_nh','max_nh','med_nh','mean_nh','var_nh','skew_nh','kurt_nh', ...
             'min_nw','max_nw','med_nw','mean_nw','var_nw','skew_nw','kurt_nw' ...
             hnames{1:10},nhnames{1:10}});
-    if ~exist('feature_filename', 'var')
+    if exist('feature_filename', 'var')
         writetable(f, feature_filename);
     end
  
