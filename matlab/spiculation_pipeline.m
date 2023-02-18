@@ -193,20 +193,20 @@ function [f, spikes_table]  = spiculation_pipeline(pid, nid, filename, n_info, .
 
 
     %% save spiculation quantification results in voxel data
-    try
-        [o_seg_img_3d, meta] = fn_nrrdread(label_file);
-        surface_voxel = bwperim(o_seg_img_3d, 6);
-        sigma = esr/2/3;
-        
-        [ard_voxel, spike_label] = voxelize_meshes(o_seg_img_3d, meta, s, nd, spikes, sigma);
-        
-        fn_nrrdwrite(ard_voxel_filename, ard_voxel, meta);
-        fn_nrrdwrite(ard_surface_filename, ard_voxel.*surface_voxel, meta);
-        fn_nrrdwrite(spike_lable_filename, spike_label, meta);
-        fn_nrrdwrite(spike_surface_filename, spike_label.*surface_voxel, meta);
-    catch exception
-        throw(exception)
-    end
+    %try
+    %    [o_seg_img_3d, meta] = fn_nrrdread(label_file);
+    %    surface_voxel = bwperim(o_seg_img_3d, 6);
+    %    sigma = esr/2/3;
+    %    
+    %    [ard_voxel, spike_label] = voxelize_meshes(o_seg_img_3d, meta, s, nd, spikes, sigma);
+    %    
+    %    fn_nrrdwrite(ard_voxel_filename, ard_voxel, meta);
+    %    fn_nrrdwrite(ard_surface_filename, ard_voxel.*surface_voxel, meta);
+    %    fn_nrrdwrite(spike_lable_filename, spike_label, meta);
+    %    fn_nrrdwrite(spike_surface_filename, spike_label.*surface_voxel, meta);
+    %catch exception
+    %    throw(exception)
+    %end
 
 
     %% Figure
