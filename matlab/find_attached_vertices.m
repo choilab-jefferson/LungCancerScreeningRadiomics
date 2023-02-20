@@ -4,13 +4,11 @@ function attachment = find_attached_vertices(o_attached_img_3d, meta, s)
 
     try
         attached_img_3d = imclose(imerode(o_attached_img_3d,se1),se1);
-        S = regionprops(attached_img_3d,'PixelList');
-        nn = size(S.PixelList,1);
-        if size(S,1) > 0 && nn>1
-            attached_voxels = S.PixelList.*repmat(meta.pixelspacing',nn,1)+repmat(meta.spaceorigin,nn,1);
-            if meta.spacedirections(3,3) < 0
-                attached_voxels(:,1:2) = -attached_voxels(:,1:2);
-            end
+        S = regionprops(bwperim(attached_img_3d, 26),'PixelList');
+        pixelList = vertcat(S.PixelList);
+        nn = size(pixelList,1);
+        if size(pixelList,1) > 0 && nn>1
+            attached_voxels = (pixelList-1).*repmat([-1, -1, 1]*meta.spacedirections,nn,1) + repmat(meta.spaceorigin,nn,1);
 
             D = pdist2(attached_voxels,s.vertices);
             attachment = (min(D)<meta.pixelspacing(1)*2)';

@@ -57,8 +57,8 @@ for idx = 1:size(pid_list,2)
     ids = strsplit(id,'_');
     pid = ids{1}; nid = ids{3};
     nids = strsplit(nid,'-');
-    nid = [nids{1} '-' nids{2}];
-    iso_t = ['_' strrep(nids{4}, 'seg_', '')];
+    nid = [nids{2} '-' nids{3}];
+    iso_t = ['-' strrep(nids{4}, 'seg_', '')];
     
 %     if ~strcmp(pid, '190365') || ~strcmp(nid, '1-1')
 %         continue
@@ -74,14 +74,14 @@ for idx = 1:size(pid_list,2)
 
     %% input & ouput files
     label_file = [experiment_path '/' pid '/' strrep(filename, '-py', '') '-label.nrrd'];
-    attached_label_filename = [experiment_path '/' pid '/' pid '_CT_' nid '-R1-attached' iso_t '-label.nrrd'];
+    attached_label_filename = [experiment_path '/' pid '/' pid '_CT_R1-' nid iso_t '-attached-label.nrrd'];
     obj_filename = [experiment_path '/' pid '/' filename '.obj'];
     sph_map_filename = [experiment_path '/' pid '/' filename '_spherical.obj'];
     
-    ard_voxel_filename = [output_experiment_path '/'  pid '/' pid '_CT_' nid '-R1-ard' iso_t '.nrrd'];
-    ard_surface_filename = [output_experiment_path '/'  pid '/' pid '_CT_' nid '-R1-ard-surface' iso_t '.nrrd'];
-    spike_lable_filename = [output_experiment_path '/'  pid '/' pid '_CT_' nid '-R1-spikes' iso_t '-label.nrrd'];
-    spike_surface_filename = [output_experiment_path '/'  pid '/' pid '_CT_' nid '-R1-spikes-surface' iso_t '-label.nrrd'];
+    ard_voxel_filename = [output_experiment_path '/'  pid '/' pid '_CT_' nid iso_t '-R1-ard.nrrd'];
+    ard_surface_filename = [output_experiment_path '/'  pid '/' pid '_CT_' nid iso_t '-R1-ard-surface.nrrd'];
+    spike_lable_filename = [output_experiment_path '/'  pid '/' pid '_CT_' nid iso_t '-R1-spikes-label.nrrd'];
+    spike_surface_filename = [output_experiment_path '/'  pid '/' pid '_CT_' nid iso_t '-R1-spikes-surface-label.nrrd'];
 
 
     %% additional output
