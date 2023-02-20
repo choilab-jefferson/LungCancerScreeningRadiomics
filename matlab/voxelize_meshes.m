@@ -27,7 +27,7 @@ function [ard_voxel, spike_label] = voxelize_meshes(o_seg_img_3d, meta, s, nd, s
     ard_voxel=double(o_seg_img_3d);
     ard_voxel(:)=0;  
 
-    if size(segmented_voxels, 1) * size(s.vertices, 1) < 1024*1024*1024
+    if size(segmented_voxels, 1) * size(s.vertices, 1) < 1024*1024
         D1 = pdist2(s.vertices,segmented_voxels);
         w1 = normpdf(D1,0,sigma)/d;
         tw1 = sum(w1);
@@ -37,7 +37,7 @@ function [ard_voxel, spike_label] = voxelize_meshes(o_seg_img_3d, meta, s, nd, s
         ard_voxel(S.PixelIdxList)=w*b;
     else
         t = zeros(1, size(segmented_voxels, 1));
-        parfor vidx = 1:size(segmented_voxels, 1)
+        for vidx = 1:size(segmented_voxels, 1)
             v = segmented_voxels(vidx, :);
             D1 = pdist2(s.vertices, v);
             w1 = normpdf(D1,0,sigma)/d;
