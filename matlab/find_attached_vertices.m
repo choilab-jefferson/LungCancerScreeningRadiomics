@@ -8,7 +8,7 @@ function attachment = find_attached_vertices(o_attached_img_3d, meta, s)
         pixelList = vertcat(S.PixelList);
         nn = size(pixelList,1);
         if size(pixelList,1) > 0 && nn>1
-            attached_voxels = (pixelList-1).*repmat([-1, -1, 1]*meta.spacedirections,nn,1) + repmat(meta.spaceorigin,nn,1);
+            attached_voxels = (pixelList-1).*repmat(diag(meta.spacedirections)',nn,1) + repmat(meta.spaceorigin,nn,1);
 
             D = pdist2(attached_voxels,s.vertices);
             attachment = (min(D)<meta.pixelspacing(1)*2)';
