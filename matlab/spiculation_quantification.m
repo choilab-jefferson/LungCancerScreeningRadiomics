@@ -1,18 +1,6 @@
 function [spikes, volume, area, nd, l_ArD, l_AnD] = spiculation_quantification(s, s1, attachment_indices)
     % mesh dimensions
     n = size(s.vertices,1);
-    n1 = size(s1.vertices,1);
-    if n ~= n1
-        a = s.faces(s.faces - s1.faces > 0);
-        b = s1.faces(s.faces - s1.faces > 0);
-        c = unique([a,b],'rows');
-        d = c(:,1)-c(:,2);
-        idx = unique([1; find(diff(d)<0);find(diff(d)>0)+1]);
-        s.vertices(c(idx,1),:) = [];
-        s.faces = s1.faces;
-        n = size(s.vertices,1);
-    end
-    
     m = size(s.faces,1);
     ce = mean(s.vertices);
 

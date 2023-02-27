@@ -17,6 +17,17 @@ function [f, spikes_table]  = spiculation_pipeline(pid, nid, filename, n_info, .
             [normals,normals_f] = patchnormals(s1);
         end
         assert(numel(s.faces)==numel(s1.faces));
+        n = size(s.vertices,1);
+        n1 = size(s1.vertices,1);
+        if n ~= n1
+            a = s.faces(s.faces - s1.faces > 0);
+            b = s1.faces(s.faces - s1.faces > 0);
+            c = unique([a,b],'rows');
+            d = c(:,1)-c(:,2);
+            idx = unique([1; find(diff(d)<0);find(diff(d)>0)+1]);
+            s.vertices(c(idx,1),:) = [];
+            s.faces = s1.faces;
+        end
     catch exception
         if ~exist(obj_filename, 'file')
             display('no obj file')
