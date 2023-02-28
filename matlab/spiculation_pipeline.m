@@ -19,12 +19,20 @@ function [f, spikes_table]  = spiculation_pipeline(pid, nid, filename, n_info, .
         assert(numel(s.faces)==numel(s1.faces));
         n = size(s.vertices,1);
         n1 = size(s1.vertices,1);
+        idx = [];
+        adj = 0;
         if n ~= n1
             a = s.faces(s.faces - s1.faces > 0);
             b = s1.faces(s.faces - s1.faces > 0);
             c = unique([a,b],'rows');
-            d = c(:,1)-c(:,2);
-            idx = unique([1; find(diff(d)<0);find(diff(d)>0)+1]);
+            for i = 1:size(c,1)
+                if diff(c(i,:)) ~= -adj
+                    idx = [idx; i];
+                    adj = adj + 1;
+                end
+            end
+%             d = c(:,1)-c(:,2);
+%             idx = unique([1; find(diff(d)<0);find(diff(d)>0)+1]);
             s.vertices(c(idx,1),:) = [];
             s.faces = s1.faces;
         end
