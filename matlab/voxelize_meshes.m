@@ -37,7 +37,7 @@ function [ard_voxel, spike_label] = voxelize_meshes(o_seg_img_3d, meta, s, nd, s
         ard_voxel(S.PixelIdxList)=w*b;
     else
         t = zeros(1, size(segmented_voxels, 1));
-        for vidx = 1:size(segmented_voxels, 1)
+        parfor vidx = 1:size(segmented_voxels, 1)
             v = segmented_voxels(vidx, :);
             D1 = pdist2(s.vertices, v);
             w1 = normpdf(D1,0,sigma)/d;
@@ -75,8 +75,17 @@ function [ard_voxel, spike_label] = voxelize_meshes(o_seg_img_3d, meta, s, nd, s
             voxels = D2<max_d*3;
             svoxels = S.PixelIdxList(spikes_voxel_idx(selected_voxel_idx(voxels)));
             %D3=dist([s.vertices(spikes(pki).spike_vertices,:);spikes(pki).l_center],X(voxels,:)');
-            D3=dist([fv.vertices;spikes(pki).l_center],X(voxels,:)');
-            minD3 = min(D3);
+            XX = X(voxels,:);
+            if size(XX, 1) * size([fv.vertices;spikes(pki).l_center], 1) < 1024*1024
+                D3=dist([fv.vertices;spikes(pki).l_center],XX');
+                minD3 = min(D3);
+            else
+                minD3 = zeros(1, size(size(XX, 1), 1));
+                parfor vidx = 1:size(XX, 1)
+                    D3=dist([fv.vertices;spikes(pki).l_center], XX(vidx,:)');
+                    minD3(vidx) = min(D3);
+                end
+            end
             spike_label(svoxels(minD3<spikes(pki).width*2/3))=spikes(pki).type+1;
         end
     end
