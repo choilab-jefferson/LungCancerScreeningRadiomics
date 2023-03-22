@@ -6,6 +6,7 @@ LUNGx https://wiki.cancerimagingarchive.net/display/Public/LUNGx+SPIE-AAPM-NCI+L
 
 Download all the required datasets from TCIA using the following command. 
 ```bash
+$ pip install git+https://github.com/taznux/TCIAExplorer.git
 $ python3 download_datasets.py
 ```
 This will store the datasets into `DATA/LIDC-IDRI` and `DATA/LUNGx`.
