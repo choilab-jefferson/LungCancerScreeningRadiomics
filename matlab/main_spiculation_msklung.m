@@ -13,8 +13,6 @@ addpath(genpath('spiculation_detection'))
 experiment_set = 'MSKLung';
 
 
-data_path = '/home/wxc151/gitRepos/radiomics_pipelines/MSKLung_pipeline/results';
-
 %% directory paths
 experiment_path = [data_path '/' experiment_set];
 smooth = false;

@@ -7,7 +7,7 @@ set_environment; % call environment setting
 
 %% set values
 sz_bbox = 200;
-smooth = true;
+smooth = false;
 experiment_set = 'MSKLung';
 
 
@@ -45,7 +45,7 @@ for idx = 1:numel(pid_list)
     results = table();
 
     fprintf('%d %s\n', idx, pid);
-    label_files = dir([experiment_path '/' pid '/' pid '_CT_*-R1' iso_t '-label.nrrd']);
+    label_files = dir([experiment_path '/' pid '/' pid '_CT_R1-*-*' iso_t '-label.nrrd']);
     for l = 1:numel(label_files)
         tic
         label_file = label_files(l);
