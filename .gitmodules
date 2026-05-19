@@ -7,3 +7,7 @@
 [submodule "matlab/toolbox/lung-image-analysis"]
 	path = matlab/toolbox/lung-image-analysis
 	url = https://github.com/taznux/lung-image-analysis.git
+[submodule "wiki"]
+	path = wiki
+	url = git@github.com:taznux/LungCancerScreeningRadiomics.wiki.git
+	branch = master
