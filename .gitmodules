@@ -9,5 +9,5 @@
 	url = https://github.com/taznux/lung-image-analysis.git
 [submodule "wiki"]
 	path = wiki
-	url = git@github.com:taznux/LungCancerScreeningRadiomics.wiki.git
+	url = git@github.com:choilab-jefferson/LungCancerScreeningRadiomics.wiki.git
 	branch = master
