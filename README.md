@@ -1,5 +1,19 @@
 # Lung Cancer Screening Radiomics
 
+> **Status: Superseded — use [qradiomics](https://github.com/choilab-jefferson/qradiomics) for all new work.**
+>
+> This Docker-based MATLAB / Python end-to-end LIDC + LUNGx screening
+> workflow with AutoML has been re-implemented under MIT in qradiomics
+> as a serverless `qr workflow plan → scaffold → run` chain (Nextflow /
+> Prefect / inline executors). The open subset is fully reproduced;
+> all ongoing work happens in qradiomics.
+>
+> ```bash
+> pip install -e ~/gitRepos/qradiomics   # or: git clone https://github.com/choilab-jefferson/qradiomics
+> qr workflow plan -t dicom_to_ml -d lidc -c clinical.csv -o plan.json
+> qr workflow run plan.json --executor nextflow
+> ```
+
 ## Datasets
 LIDC-IDRI https://wiki.cancerimagingarchive.net/display/Public/LIDC-IDRI  
 LUNGx https://wiki.cancerimagingarchive.net/display/Public/LUNGx+SPIE-AAPM-NCI+Lung+Nodule+Classification+Challenge  
